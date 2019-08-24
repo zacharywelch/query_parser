@@ -32,7 +32,7 @@ class Parser < Parslet::Parser
   end
 
   rule :column do
-    (identifier | star).as(:column) >> space?
+    (star | identifier).as(:column) >> space?
   end
 
   rule :since do
@@ -44,7 +44,7 @@ class Parser < Parslet::Parser
   end
 
   rule :date do
-    explicit_date | relative_date
+    explicit_date | relative_date.as(:duration)
   end
 
   rule :explicit_date do
@@ -52,11 +52,11 @@ class Parser < Parslet::Parser
   end
 
   rule :relative_date do
-    dash >> digit.repeat(1) >> match('[dwmy]')
+    (dash >> digit.repeat(1)).as(:quantity) >> unit.as(:unit)
   end
 
   rule :identifier do
-    match('[a-zA-Z]') >> match('\w').repeat
+    match('[a-zA-Z_]').repeat
   end
 
   rule :star do
@@ -73,6 +73,10 @@ class Parser < Parslet::Parser
 
   rule :digit do
     match('\d')
+  end
+
+  rule :unit do
+    match('[dwmy]')
   end
 
   rule :space? do

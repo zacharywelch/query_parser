@@ -8,5 +8,5 @@ pp parser.parse('show name, email from users by company since 2019-01-01 until -
  :from=>"users"@22,
  :by=>{:column=>"company"@31},
  :since=>"2019-01-01"@45,
- :until=>"-1d"@62}
+ :until=>{:duration=>{:quantity=>"-1"@62, :unit=>"d"@64}}}
 ```

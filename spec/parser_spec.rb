@@ -5,7 +5,7 @@ describe Parser do
   subject(:parser) { Parser.new }
 
   it 'parses query' do
-    query = 'SHOW name, email FROM users BY company SINCE 2019-01-01 UNTIL -1d LIMIT 1000'
+    query = "SHOW name, email_address AS 'email' FROM users BY company SINCE 2019-01-01 UNTIL -1d LIMIT 1000"
     begin
       pp parser.parse(query)
     rescue Parslet::ParseFailed => error
@@ -38,18 +38,20 @@ describe Parser do
     it { is_expected.to_not parse(' ,') }
   end
 
-  describe 'column' do
+  describe 'attribute' do
 
-    subject { parser.column }
+    subject { parser.attribute }
 
+    it { is_expected.to parse('*') }
     it { is_expected.to parse('foo') }
     it { is_expected.to parse('foo_bar') }
+    it { is_expected.to parse("foo as 'bar'") }
     it { is_expected.to_not parse('foo bar') }
   end
 
-  describe 'columns' do
+  describe 'attributes' do
 
-    subject { parser.columns }
+    subject { parser.attributes }
 
     it { is_expected.to parse('*') }
     it { is_expected.to parse('*, foo') }

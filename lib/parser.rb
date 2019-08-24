@@ -8,7 +8,7 @@ class Parser < Parslet::Parser
   end
 
   rule :show do
-    stri('show') >> space >> columns.as(:show)
+    stri('show') >> space >> attributes.as(:show)
   end
 
   rule :from do
@@ -16,7 +16,7 @@ class Parser < Parslet::Parser
   end
 
   rule :group do
-    stri('by') >> space >> columns.as(:by)
+    stri('by') >> space >> attributes.as(:by)
   end
 
   rule :timerange do
@@ -27,12 +27,16 @@ class Parser < Parslet::Parser
     stri('limit') >> space >> digit.repeat(1).as(:limit)
   end
 
-  rule :columns do
-    column >> (comma >> column).repeat
+  rule :attributes do
+    attribute >> (comma >> attribute).repeat
   end
 
-  rule :column do
-    (star | identifier).as(:column) >> space?
+  rule :attribute do
+    (star | identifier).as(:attribute) >> (space >> label).maybe >> space?
+  end
+
+  rule :label do
+    stri('as') >> space >> quoted.as(:label)
   end
 
   rule :since do
@@ -59,6 +63,10 @@ class Parser < Parslet::Parser
     match('[a-zA-Z_]').repeat
   end
 
+  rule :quoted do
+    quote.ignore >> text >> quote.ignore
+  end
+
   rule :star do
     str('*')
   end
@@ -71,8 +79,16 @@ class Parser < Parslet::Parser
     str('-')
   end
 
+  rule :quote do
+    str("'")
+  end
+
   rule :digit do
     match('\d')
+  end
+
+  rule :text do
+    identifier >> (space >> identifier).repeat
   end
 
   rule :unit do

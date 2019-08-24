@@ -5,7 +5,7 @@ describe Parser do
   subject(:parser) { Parser.new }
 
   it 'parses query' do
-    query = 'show name, email from users by company since 2019-01-01 until -1d'
+    query = 'SHOW name, email FROM users BY company SINCE 2019-01-01 UNTIL -1d LIMIT 1000'
     begin
       pp parser.parse(query)
     rescue Parslet::ParseFailed => error

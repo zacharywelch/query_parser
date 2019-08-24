@@ -4,7 +4,7 @@ class Parser < Parslet::Parser
   root :query
 
   rule :query do
-    show >> from >> group.maybe >> timerange.maybe
+    show >> from >> group.maybe >> timerange.maybe >> limit.maybe
   end
 
   rule :show do
@@ -20,7 +20,11 @@ class Parser < Parslet::Parser
   end
 
   rule :timerange do
-    since.maybe >> space? >> untill.maybe
+    since.maybe >> space? >> untill.maybe >> space?
+  end
+
+  rule :limit do
+    stri('limit') >> space >> digit.repeat(1).as(:limit)
   end
 
   rule :schema do
